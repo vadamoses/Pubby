@@ -1,0 +1,285 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.container-my {
+	width: 100%;
+	height: 100vh;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.header {
+	background-color: #315496;
+	height: 10%;
+	width: 100%;
+	align-content: center;
+	vertical-align: baseline;
+	margin-left: 0;
+}
+
+.header-pubby-div {
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: auto;
+	margin-bottom: auto;
+	box-sizing: content-box;
+	top: 50%;
+	width: 10%;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.heading-pubby {
+	color: #ffffff;
+	position: relative;
+	padding-left: 0;
+	padding-right: 0;
+	left: 30px;
+	width: 120;
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: auto;
+	margin-bottom: auto;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.forkImg {
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: auto;
+	margin-top: auto;
+	position: relative;
+	width: 40px;
+	height: 40px;
+	left: 175px;
+	top: -80%;
+}
+
+.nav-links-div {
+	position: absolute;
+	top: 5%;
+	right: 0;
+	transform: translateY(-50%);
+	box-sizing: border-box;
+	width: 20%;
+}
+
+.quiz-button {
+	left: 50px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #fdfdfd;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.cart-button {
+	position: absolute;
+	right: 100px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #fdfdfd;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+
+
+
+.body {
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: auto;
+	margin-top: auto;
+	height: 80%;
+	text-align: center;
+	background-color: #fdfdfd;
+	display: block;
+}
+
+a {
+	color: blue;
+}
+
+.quiz-question-heading {
+	padding-left: 0;
+	padding-right: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	width: 800px;
+}
+
+.added-message{
+	text-align: center;
+}
+
+
+.edit-status-heading{
+	
+	padding-left: 0;
+	padding-right: 0px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.body-text-heading {
+	box-sizing: border-box;
+	padding-left: 0;
+	padding-right: 0px;
+	padding-top: 50px;
+	padding-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 20px;
+}
+.cart-result{
+	width: 100%;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.show-cart-table{
+	width: 50%;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+
+.edit-quiz-question-form{
+	width: 50%;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;	
+}
+
+.edit-form{
+	left:0;
+	width: 700px;
+	text-align: left;
+}
+
+
+.edit-form-name{
+	width: 40%;
+	
+}
+
+.table-div {
+	width: 800;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	vertical-align: middle;
+	transform: translateX(-25%);
+}
+
+.table {
+	border-collapse: separate;
+	border-spacing: 15px;
+	margin-right: 0;
+	box-sizing: border-box;
+	font-size: unset;
+}
+
+.cart-footer-row{
+	font-weight: bold;
+}
+
+.save-button-edit {
+  background-color: #315496;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.save-button-text{
+	color: white;
+}
+
+td {
+	width: 200px;
+}
+
+
+.quiz-question-List-Result {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.cust-notif-subheading, .edit-quiz-status {
+	color: #10ac4c;
+	font-weight: bold;
+}
+
+.cart-empty-message {
+	color: #777777;
+	position: relative;
+	text-align: left;
+	left: 200px;
+	width: 1000px;
+}
+
+.cart-notif-table {
+	position: relative;
+	left: 200px;
+}
+
+.cart-notif-table-cells {
+	width: 100px;
+}
+
+.form-edit-question {
+	position: relative;
+	left: 0;
+	right: 200px;
+	width: 1000px;
+	text-align: left;
+}
+
+.quizTableTable {
+	padding-left: 200px;
+	text-align: left;
+}
+
+.quizTableElements {
+	width: 200px;
+}
+
+.footer {
+	background-color: #bfbfbf;
+	height: 10%;
+	position: relative;
+}
+
+.copyright-div {
+	left: 50px;
+	position: absolute;
+	bottom: 50%;
+	transform: translateY(50%);
+}
+
+.copyright {
+	bottom: 50%;
+	left: 30px;
+}
