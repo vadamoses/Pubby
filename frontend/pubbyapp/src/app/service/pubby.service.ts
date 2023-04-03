@@ -1,43 +1,50 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
 import { Question } from '../model/question';
+import { Quiz } from '../model/quiz';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class PubbyService {
 
+
 	private questionsUrl: string;
 
 	constructor(private http: HttpClient) {
 		this.questionsUrl = 'http://localhost:8088/quiz';
 	}
-	public setAllQuestionsJSON() {
-		return this.http.get(this.questionsUrl + "/set-questions");
+	setAllQuestionsJSON() {
+		return this.http.get(this.questionsUrl + "/set-questions-from-file");
 	}
-	public saveQuestion(question: Question) {
-    	return this.http.post<Question>(this.questionsUrl, question);
-  	}
-	public getQuizQuestions(): Observable<Question[]>{
-		return this.http.get<Question[]>(this.questionsUrl +"/get-quiz-questions")
-		.pipe(
-			tap(
-				data => JSON.stringify(data)
-			)
-		);
+	setupQuiz(quiz: Quiz): Observable<Quiz> {
+		return this.http.post<Quiz>(`${this.questionsUrl}/setup-quiz`, quiz);
 	}
-	public playQuiz(quizSize: number) {
-		return this.http.post(this.questionsUrl + "/play-quiz", quizSize);
+
+	createQuestion(question: any): Observable<Question> {
+		return this.http.post(`${this.questionsUrl}/add-new-question`, question);
 	}
-	public askQuestion() {
-		return this.http.get(this.questionsUrl + "/ask-question");
+	getQuizQuestions(): Observable<Question[]> {
+		return this.http.get<Question[]>(`${this.questionsUrl}/get-quiz-questions`);
 	}
-	public validateAnswers(currentQuestion: Question, userAnswers: string[]) {
-		return this.http.post<Question>(this.questionsUrl + "/validate-answers", { currentQuestion, userAnswers });
+	refreshQuizQuestions(): Observable<Question[]> {
+		return this.http.get<Question[]>(`${this.questionsUrl}/refresh-quiz-questions`);
 	}
-	public showQuizQuestionsList() {
-		return this.http.get(this.questionsUrl + "/show-questions-list");
+	get10Questions(): Observable<Question[]> {
+		return this.http.get<Question[]>(`${this.questionsUrl}/get-10-questions`);
+	}
+
+	askQuestion(): Observable<Question> {
+		return this.http.get(`${this.questionsUrl}` + "/ask-question");
+	}
+	validateAnswers(currentQuestion: any, userAnswers: any[]) {
+		return this.http.post(`${this.questionsUrl}/validate-answers`, { currentQuestion, userAnswers });
+	}
+	showQuizQuestionsList(): Observable<Question> {
+		return this.http.get(`${this.questionsUrl}/show-questions-list`);
+	}
+	deleteAll(): Observable<any> {
+		return this.http.delete(`${this.questionsUrl}/delete-quiz-questions`);
 	}
 }

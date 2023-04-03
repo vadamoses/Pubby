@@ -13,18 +13,23 @@ public interface QuestionService {
 
 	List<Question> getQuizQuestions();
 
+	void setQuizQuestions(int quizSize);
+
 	List<String> getQuestionAnswers(Question question);
 
 	boolean validateUserAnswers(Question question, List<String> userAnswers);
 
 	List<String> showCorrectAnswers(Question question);
 
-	void addQuestion(final Question question);
-	
-	void editQuestion(final Question question);
+	Question addQuestion(final Question question);
+
+	Question editQuestion(final Question question);
 
 	List<Question> saveQuestions(List<Question> questionsList);
 
 	Question findQuestion(Integer qId);
+
+	void deleteAllQuizQuestions();
+
 
 }

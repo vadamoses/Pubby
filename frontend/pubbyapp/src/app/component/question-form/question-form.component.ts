@@ -20,7 +20,7 @@ export class QuestionFormComponent {
 		}
 		
 	onSubmit() {
-    		this.pubbyService.saveQuestion(this.question).subscribe(result => this.gotoQuestionsList());
+    		this.pubbyService.createQuestion(this.question).subscribe(result => this.gotoQuestionsList());
   		}
 
   	gotoQuestionsList() {

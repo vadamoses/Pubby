@@ -1,1 +1,31 @@
-<p>question-form works!</p>
+<div class="card my-5">
+	<div class="card-body">
+		<form (ngSubmit)="onSubmit()" #questionForm="ngForm">
+			<div class="form-group">
+				<label for="qContext">Question Context/Genre (Default = General)</label>
+				<input type="text" [(ngModel)]="question.qContext"
+					class="form-control" id="qContext" name="qContext"
+					placeholder="Enter Context" required #qContext="ngModel">
+			</div>
+			<div [hidden]="!qContext.pristine" class="alert alert-danger">Context
+				is required</div>
+			<div class="form-group">
+				<label for="qText">Question Text</label> <input type="text"
+					[(ngModel)]="question.qText" class="form-control" id="qText" name="qText"
+					placeholder="Enter Question Text" required #qText="ngModel">
+			</div>
+			<div [hidden]="!qText.pristine" class="alert alert-danger">Question Text
+				is required</div>
+			<div class="form-group">
+				<label for="qAnswers">Question Answer(s)</label> <input type="text"
+					[(ngModel)]="question.qAnswers" class="form-control" id="qAnswers" name="qAnswers"
+					placeholder="Enter your Answers" required #qAnswers="ngModel">
+			</div>
+			<div [hidden]="!qAnswers.pristine" class="alert alert-danger">Answers
+				are required</div>
+			<button type="submit" [disabled]="!questionForm.form.valid"
+				class="btn btn-info">Submit</button>
+		</form>
+	</div>
+</div>
+

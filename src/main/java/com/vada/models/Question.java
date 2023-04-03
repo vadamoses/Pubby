@@ -41,6 +41,19 @@ public class Question implements Serializable {
 	 */
 	public Question() {
 	}
+	
+	/**
+	 *
+	 * @param qContext
+	 * @param qText
+	 * @param qAnswers
+	 */
+	public Question(String qContext, List<String> qAnswers, String qText) {
+		super();
+		this.qContext = qContext;
+		this.qAnswers = qAnswers;
+		this.qText = qText;
+	}
 
 	/**
 	 *

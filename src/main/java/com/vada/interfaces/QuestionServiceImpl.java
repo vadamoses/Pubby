@@ -22,10 +22,6 @@ public class QuestionServiceImpl implements QuestionService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	// set quizSize first in controller!!
-	@Getter
-	@Setter
-	private int quizSize;
 	@Getter
 	@Setter
 	private int score = 0;
@@ -39,10 +35,18 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public List<Question> getQuizQuestions() {
+	public void setQuizQuestions(int quizSize) {
 		this.setQuestionsList(entityManager.createQuery("SELECT q FROM Question q ORDER BY RAND()", Question.class)
-				.setMaxResults(this.getQuizSize()).getResultList());
+				.setMaxResults(quizSize).getResultList());
+	}
 
+	public List<Question> get10Questions() {
+		return entityManager.createQuery("SELECT q FROM Question q ORDER BY RAND()", Question.class).setMaxResults(10)
+				.getResultList();
+	}
+
+	@Override
+	public List<Question> getQuizQuestions() {
 		return this.getQuestionsList();
 	}
 
@@ -55,15 +59,15 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		return question;
 	}
-	
+
 	@Override
-	public void addQuestion(Question question) {
-		questionRepo.save(question);
+	public Question addQuestion(Question question) {
+		return questionRepo.save(question);
 	}
 
 	@Override
-	public void editQuestion(Question question) {
-		questionRepo.save(question);
+	public Question editQuestion(Question question) {
+		return questionRepo.save(question);
 	}
 
 	// move method somewhere else ??
@@ -92,6 +96,11 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public List<String> showCorrectAnswers(Question question) {
 		return question.getqAnswers();
+	}
+
+	@Override
+	public void deleteAllQuizQuestions() {
+		this.questionsList.clear();
 	}
 
 }
