@@ -40,11 +40,6 @@ public class QuestionServiceImpl implements QuestionService {
 				.setMaxResults(quizSize).getResultList());
 	}
 
-	public List<Question> get10Questions() {
-		return entityManager.createQuery("SELECT q FROM Question q ORDER BY RAND()", Question.class).setMaxResults(10)
-				.getResultList();
-	}
-
 	@Override
 	public List<Question> getQuizQuestions() {
 		return this.getQuestionsList();

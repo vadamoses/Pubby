@@ -42,7 +42,7 @@ public class QuizController {
 	private QuestionServiceImpl qService;
 
 	LocalQuiz lQuiz = new LocalQuiz();
-	
+
 	Quiz newQuiz = new Quiz();
 
 	@Getter
@@ -96,28 +96,16 @@ public class QuizController {
 		LOGGER.info("End - getQuizQuestions");
 		return new ResponseEntity<>(quizQuestions, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * @return quizQuestions
 	 */
 	@GetMapping(value = "/refresh-quiz-questions")
 	public ResponseEntity<List<Question>> refreshQuizQuestions() {
 		LOGGER.info("Start - refreshQuizQuestions");
-		qService.setQuestionsList(List.of());
+		// qService.setQuestionsList(List.of());
 		List<Question> quizQuestions = qService.getQuizQuestions();
 		LOGGER.info("End - refreshQuizQuestions");
-		return new ResponseEntity<>(quizQuestions, HttpStatus.OK);
-	}
-
-	/**
-	 * @return quizQuestions
-	 */
-	@GetMapping(value = "/get-10-questions")
-	public ResponseEntity<List<Question>> get10Questions() {
-		LOGGER.info("Start - get10Questions");
-
-		List<Question> quizQuestions = qService.get10Questions();
-		LOGGER.info("End - get10Questions");
 		return new ResponseEntity<>(quizQuestions, HttpStatus.OK);
 	}
 
@@ -162,11 +150,12 @@ public class QuizController {
 	}
 
 	@DeleteMapping(value = "/delete-quiz-questions")
-	public void deleteAllQuizQuestions() {
+	public ResponseEntity<HttpStatus> deleteAllQuizQuestions() {
 		LOGGER.info("Start - deleteAllQuizQuestions");
 
 		this.qService.deleteAllQuizQuestions();
 
 		LOGGER.info("End - deleteAllQuizQuestions");
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

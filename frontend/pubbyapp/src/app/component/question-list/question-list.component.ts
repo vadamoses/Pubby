@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Question } from '../../model/question';
 import { PubbyService } from '../../service/pubby.service';
@@ -19,8 +19,8 @@ export class QuestionListComponent implements OnInit, OnDestroy {
 	}
 	ngOnInit(): void {
 		this.retrieveQuestions();
-		//this.retrieve10Questions();
 	}
+
 	retrieveQuestions() {
 		this.subscription = this.pubbyService.getQuizQuestions()
 			.subscribe(
@@ -29,21 +29,15 @@ export class QuestionListComponent implements OnInit, OnDestroy {
 					this.quizQuestions = result;
 				})
 	}
-	retrieve10Questions() {
-		this.pubbyService.get10Questions()
-			.subscribe(
-				result => {
-					console.log(result);
-					this.quizQuestions = result;
-				})
-	}
 
 	refreshList(): void {
+		this.pubbyService.deleteAll();
+
 		this.subscription = this.pubbyService.refreshQuizQuestions()
 			.subscribe(
 				result => {
-					console.log(result);
 					this.quizQuestions = result;
+					this.redirectTo('/questions');
 				})
 	}
 
@@ -51,17 +45,22 @@ export class QuestionListComponent implements OnInit, OnDestroy {
 		this.pubbyService.deleteAll()
 			.subscribe({
 				next: (res) => {
-					console.log(res);
-					this.gotoSetupForm();
+					this.redirectTo('/setupquiz');
 				},
 				error: (e) => console.error(e)
 			});
 	}
-	gotoSetupForm() {
-		this.router.navigate(['/setupquiz']);
+
+	redirectTo(url: string): void {
+		// When skipLocationChange true, navigates without pushing a new state into history.
+		this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+			this.router.navigate([url]);
+		});
 	}
 	ngOnDestroy() {
-		this.subscription.unsubscribe();
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
 	}
 
 }

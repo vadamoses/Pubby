@@ -1,6 +1,6 @@
 <div class="card my-5">
 	<div class="card-body">
-		<form [formGroup]="setupForm" #savequiz (ngSubmit)="saveQuiz(saveQuiz)">
+		<form [formGroup]="setupForm" #savequiz (ngSubmit)="saveQuiz()">
 			<div class="form-group">
 				<label for="quizSize">The number of Questions to generate for the quiz</label>
 				<input type="number"

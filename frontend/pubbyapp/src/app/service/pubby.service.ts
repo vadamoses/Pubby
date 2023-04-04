@@ -31,9 +31,6 @@ export class PubbyService {
 	refreshQuizQuestions(): Observable<Question[]> {
 		return this.http.get<Question[]>(`${this.questionsUrl}/refresh-quiz-questions`);
 	}
-	get10Questions(): Observable<Question[]> {
-		return this.http.get<Question[]>(`${this.questionsUrl}/get-10-questions`);
-	}
 
 	askQuestion(): Observable<Question> {
 		return this.http.get(`${this.questionsUrl}` + "/ask-question");

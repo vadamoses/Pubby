@@ -25,7 +25,7 @@ export class QuizSetupFormComponent implements OnInit {
 	// convenient getter for easy access to form fields
 	get f() { return this.setupForm.controls; }
 
-	saveQuiz(saveQuiz: any) {
+	saveQuiz() {
 		this.newQuiz = new Quiz();
 		this.newQuiz.quizSize = this.f.quizSize.value;
 		this.setupQuiz();
