@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.vada.models.Question;
 
 @Repository
-public interface QuestionRepository extends JpaRepository<Question, Integer> {
+public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 }

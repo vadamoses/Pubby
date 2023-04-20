@@ -1,0 +1,21 @@
+<div *ngIf="!quizComplete">
+	<h3>Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}</h3>
+	<h3>QuizProgress: {{ getQuizProgress() }}</h3>
+	<div class="progress">
+		<div class="progress-bar" role="progressbar"
+			[style.width]="getQuizProgress() + '%'"
+			[attr.aria-valuenow]="getQuizProgress()" aria-valuemin="0"
+			aria-valuemax="1">{{ getQuizProgress() }}%</div>
+	</div>
+	<app-question-card [question]="currentQuestion"
+		(givenAnswer)="onAnswerGiven($event)"
+		(nextQuestion)="onNextQuestion()"
+		></app-question-card>
+</div>
+
+<div *ngIf="quizComplete">
+	<h3>Quiz Complete</h3>
+	<p>Your score is {{ getQuizScore() }} out of {{ questions.length }}.</p>
+	<button (click)="restartQuiz()">Restart Quiz</button>
+	<button (click)="quit()">Quit Game</button>
+</div>

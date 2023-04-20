@@ -1,0 +1,36 @@
+.card {
+  margin-top: 2rem;
+}
+
+.card-header {
+  background-color: #f0f0f0;
+}
+
+.card-header .nav-link {
+  color: #333;
+}
+
+.card-header .nav-link.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.card-body form {
+  margin-top: 2rem;
+}
+
+.form-group label {
+  font-weight: bold;
+}
+
+.form-control {
+  margin-top: 0.5rem;
+}
+
+.btn-primary {
+  margin-top: 1rem;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+}

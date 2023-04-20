@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { QuizOptions } from '../../model/quiz-options';
 import { PubbyService } from '../../service/pubby.service';
-import { Quiz } from '../../model/quiz';
 
 @Component({
 	selector: 'app-quiz-setup-form',
@@ -10,38 +9,32 @@ import { Quiz } from '../../model/quiz';
 	styleUrls: ['./quiz-setup-form.component.css']
 })
 export class QuizSetupFormComponent implements OnInit {
+	quizSize!: number;
 
-	newQuiz: Quiz = new Quiz;
-	constructor(
-		private router: Router,
-		private pubbyService: PubbyService) { }
-	ngOnInit() {
+	constructor(private router: Router, private quizService: PubbyService) { }
+
+	ngOnInit(): void {
 	}
 
-	setupForm = new FormGroup({
-		quizSize: new FormControl('', [Validators.required, Validators.minLength(1)])
-	})
-
-	// convenient getter for easy access to form fields
-	get f() { return this.setupForm.controls; }
-
-	saveQuiz() {
-		this.newQuiz = new Quiz();
-		this.newQuiz.quizSize = this.f.quizSize.value;
-		this.setupQuiz();
+	setupQuizWithOptions() {
+		if (this.quizSize) {
+			const quizOptions: QuizOptions = { quizSize: this.quizSize };
+			this.quizService.setupQuiz(quizOptions).subscribe({
+				next: () => {
+					this.startQuiz();
+				},
+				error: (error) => console.log(error)
+			});
+			
+		}
 	}
 
-	setupQuiz() {
-		this.pubbyService.setupQuiz(this.newQuiz).subscribe(error => console.log(error)); 
-		this.gotoQuestionsList();
-		this.resetForm();
-	}
-
-	gotoQuestionsList() {
-		this.router.navigate(['/questions']);
-	}
-
-	resetForm() {
-		this.setupForm.reset();
+	startQuiz() {
+		this.quizService.getQuizQuestions().subscribe({
+			next: (questions) => {
+				this.router.navigate(['/quiz'], { state: { questions } });
+			},
+			error: (error) => console.log(error)
+		});
 	}
 }

@@ -1,8 +1,59 @@
+/* question-card.component.css */
 .question-card {
-  max-width: 400px;
+	border: 1px solid #ccc;
+	padding: 10px;
 }
 
-.question-header-image {
-  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-  background-size: cover;
+.question-card-title {
+	font-size: 24px;
+	margin: 0 0 10px;
+}
+
+.question-card-text {
+	font-size: 24px;
+	margin: 0 0 20px;
+}
+
+.question-card-answers {
+	font-size: 24px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.question-card-answers li {
+	margin-bottom: 10px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.question-card-answers li.question-card-selected-answer {
+	background-color: #ffff00;
+}
+
+.question-card-answers li.question-card-correct-answer {
+	background-color: #0f0;
+	border-color: #0f0;
+}
+
+.question-card-answers li.question-card-incorrect-answer {
+	background-color: #f00;
+	border-color: #f00;
+}
+
+.question-card-next-button {
+	margin-top: 20px;
+	padding: 10px 20px;
+	border: none;
+	background-color: #007bff;
+	color: #fff;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.question-card-next-button:disabled {
+	opacity: 0.5;
+	cursor: default;
 }
