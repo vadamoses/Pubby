@@ -1,21 +1,12 @@
 package com.vada.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class QuizOptions {
-    private int quizSize;
-
-    public QuizOptions() {
-    }
-
-    public QuizOptions(int quizSize) {
-        this.quizSize = quizSize;
-    }
-
-    public int getQuizSize() {
-        return quizSize;
-    }
-
-    public void setQuizSize(int quizSize) {
-        this.quizSize = quizSize;
-    }
+	private int quizSize;
 }
-

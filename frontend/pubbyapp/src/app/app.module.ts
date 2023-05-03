@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
 
 import { AppComponent } from './app.component';
@@ -12,6 +12,7 @@ import { AuthenticationService } from 'src/app/service/authentication-service';
 import { QuestionCardComponent } from './component/question-card/question-card.component';
 import { QuizComponent } from '../app/component/quiz/quiz.component';
 import { AuthCardComponent } from './component/auth-card/auth-card.component';
+import { TokenInterceptorService } from './tools/token-interceptor.service';
 import { UserAuthenticationComponent } from './component/user-authentication/user-authentication.component';
 
 @NgModule({
@@ -31,7 +32,11 @@ import { UserAuthenticationComponent } from './component/user-authentication/use
 		DataTablesModule,
 		FormsModule
 	],
-	providers: [PubbyService, AuthenticationService],
+	providers: [PubbyService, AuthenticationService, {
+	    provide: HTTP_INTERCEPTORS,
+	    useClass: TokenInterceptorService,
+	    multi: true,
+	  }],
 	bootstrap: [AppComponent],
 	exports: [QuizSetupFormComponent]
 })

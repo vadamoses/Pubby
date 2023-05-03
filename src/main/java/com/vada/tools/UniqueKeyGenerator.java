@@ -1,19 +1,21 @@
 package com.vada.tools;
-import java.security.SecureRandom;
-import java.util.Base64;
+
+import java.security.Key;
+
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 
 public class UniqueKeyGenerator {
-    private static final int KEY_LENGTH = 64; // 512 bits
 
     public static String generateKey() {
-        SecureRandom random = new SecureRandom();
-        byte[] keyBytes = new byte[KEY_LENGTH / 8];
-        random.nextBytes(keyBytes);
-        return Base64.getEncoder().encodeToString(keyBytes);
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        return Encoders.BASE64.encode(key.getEncoded());
     }
 
     public static void main(String[] args) {
         String key = generateKey();
-        System.out.println(key);
+        System.out.println("Key value: " + key);
     }
 }
+

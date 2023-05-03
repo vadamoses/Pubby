@@ -1,12 +1,17 @@
 package com.vada.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.vada.models.AppUser;
+import com.vada.models.User;
+
 @Repository
-public interface UserRepository extends JpaRepository<AppUser, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
+  Optional<User> findByUsername(String username);
 
-	AppUser findByUsername(String username);
+  Boolean existsByUsername(String username);
 
+  Boolean existsByEmail(String email);
 }

@@ -1,5 +1,5 @@
 export class QuizOptions {
-	quizSize?: number;
+	quizSize: number = 0;
 
 	constructor() {
 	}

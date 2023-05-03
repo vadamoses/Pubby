@@ -5,54 +5,52 @@ import { environment } from '../../environments/environment';
 import { Question } from '../model/question';
 import { QuizOptions } from '../model/quiz-options';
 
+	  
+const httpOptions = {
+   headers: new HttpHeaders({
+     'Content-Type':  'application/json'
+   })
+ };
+    
+    
 @Injectable({
   providedIn: 'root'
 })
 export class PubbyService {
-
-  private authHeaders: HttpHeaders;
-
-  constructor(private http: HttpClient) {
-    this.authHeaders = new HttpHeaders();
-  }
-
-  private getAuthHeaders(): HttpHeaders {
-	  this.authHeaders = this.authHeaders.set('Authorization', `Bearer ${localStorage.getItem('currentUser')}`);
-	  this.authHeaders = this.authHeaders.set('Content-Type', 'application/json');
-	  return this.authHeaders;
-  }
-
+  
+  constructor(private http: HttpClient) {}
 
   public setupQuiz(quizOptions: QuizOptions): Observable<QuizOptions> {
-    return this.http.post<QuizOptions>(`${environment.quizUrl}/setup-quiz`, quizOptions, { headers: this.getAuthHeaders() });
+	  httpOptions.headers.append('Authorization','Bearer ')
+	return this.http.post<QuizOptions>(`${environment.quizUrl}/setup-quiz`, quizOptions, httpOptions);
   }
 
   public getQuizQuestions(): Observable<Question[]> {
-    return this.http.get<Question[]>(`${environment.quizUrl}/get-quiz-questions`, { headers: this.getAuthHeaders() });
+    return this.http.get<Question[]>(`${environment.quizUrl}/get-quiz-questions`);
   }
   
   public validateAnswer(givenAnswer: any): Observable<boolean> {
-	  const options = { params: { givenAnswer }, headers: this.getAuthHeaders() };
-	  return this.http.get<boolean>(`${environment.quizUrl}/validate-answer`, options);
+    const options = { params: { givenAnswer }};
+    return this.http.get<boolean>(`${environment.quizUrl}/validate-answer`, options);
   }
 
   public addQuestion(question: Question): Observable<Question> {
-    return this.http.post<Question>(`${environment.quizUrl}/add`, { question }, { headers: this.getAuthHeaders() });
+    return this.http.post<Question>(`${environment.quizUrl}/add`, { question });
   }
 
   public editQuestion(question: Question): Observable<Question> {
-    return this.http.put<Question>(`${environment.quizUrl}/edit/${question.questionId}`, question, { headers: this.getAuthHeaders() });
+    return this.http.put<Question>(`${environment.quizUrl}/edit/${question.questionId}`, question );
   }
 
   public saveQuestions(questionsList: Question[]): Observable<any> {
-    return this.http.post<any>(`${environment.quizUrl}/save`, questionsList, { headers: this.getAuthHeaders() });
+    return this.http.post<any>(`${environment.quizUrl}/save`, questionsList);
   }
 
   public findQuestion(questionId: number): Observable<Question> {
-    return this.http.get<Question>(`${environment.quizUrl}/find/${questionId}`, { headers: this.getAuthHeaders() });
+    return this.http.get<Question>(`${environment.quizUrl}/find/${questionId}`);
   }
 
   public deleteAllQuizQuestions(): Observable<any> {
-    return this.http.delete<any>(`${environment.quizUrl}/refresh-quiz-questions`, { headers: this.getAuthHeaders() });
+    return this.http.delete<any>(`${environment.quizUrl}/refresh-quiz-questions`);
   }
 }

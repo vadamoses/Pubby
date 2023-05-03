@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppUser } from '../../model/app-user';
+import { first } from 'rxjs/operators';
+import { LoginRequest } from '../../model/authentication/login-request';
+import { RegisterRequest } from '../../model/authentication/register-request';
 import { AuthenticationService } from '../../service/authentication-service';
 
 @Component({
@@ -10,24 +12,30 @@ import { AuthenticationService } from '../../service/authentication-service';
 })
 export class UserAuthenticationComponent {
 
+	errorMessage = '';
+
   constructor(private router: Router, private authService: AuthenticationService) { }
   
-  handleLogin(user: AppUser) {
-	  this.authService.loginUser(user).subscribe({
-	    next: () => {
-	      this.router.navigate(['/setupquiz']);
-	    },
-	    error: (error) => console.log(error)
-	  });
+    handleLogin(user: LoginRequest) {
+	   this.authService.login(user)
+	   .pipe(first()).subscribe({
+	       next: () => {
+	       	   this.router.navigate(['/setupquiz']);
+	         },
+	         error: err => {
+	           this.errorMessage = err.error.message;
+	         }
+	       });
 	}
 
-	handleRegister(user: AppUser) {
-	  this.authService.registerUser(user).subscribe({
-	    next: () => {
-	      this.router.navigate(['/auth']);
-	    },
-	    error: (error) => console.log(error)
-	  });
-	}
-
+	handleRegister(user: RegisterRequest) {
+	  this.authService.register(user).subscribe({
+	      next: () => {
+	      	  this.router.navigate(['/auth']);
+	        },
+	        error: err => {
+	          this.errorMessage = err.error.message;
+	        }
+	      });
+	    }
 }

@@ -5,6 +5,6 @@
 export const environment = {
   production: false,
   title: 'Local Development Environment',
-  authenticationUrl : 'http://localhost:8088/users',
-  quizUrl : 'http://localhost:8088/quiz'
+  authenticationUrl : 'http://localhost:8088/api/auth',
+  quizUrl : 'http://localhost:8088/api/quiz'
 };

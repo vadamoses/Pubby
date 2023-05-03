@@ -1,66 +1,55 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { AppUser } from '../model/app-user';
+import { LoginRequest } from '../model/authentication/login-request';
+import { RegisterRequest } from '../model/authentication/register-request';
+import { AppUser } from '../model/authentication/app-user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private currentUserSubject: BehaviorSubject<AppUser | null>;
-  public currentUser: Observable<AppUser | null>;
-  private httpOptions: { headers: HttpHeaders };
-  
+	
+	private userSubject: BehaviorSubject<AppUser>;
+	public user: Observable<AppUser>;
+
   constructor(private http: HttpClient) {
-    const storedUser = localStorage.getItem('currentUser');
-    this.currentUserSubject = new BehaviorSubject<AppUser | null>(storedUser ? JSON.parse(storedUser) : null);
-    this.currentUser = this.currentUserSubject.asObservable();
+    const currentUser = localStorage.getItem('currentUser');
+    this.userSubject = new BehaviorSubject<AppUser>(
+    	currentUser ? JSON.parse(currentUser) : null
+  	);
+    this.user = this.userSubject.asObservable();
+  }
+  
+  getUserValue(): AppUser {
+    return this.userSubject.value;
+  }
     
-    this.httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
+  register(registerRequest: RegisterRequest): Observable<any> {
+	  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+	  return this.http.post<any>(`${environment.authenticationUrl}/register`, registerRequest, { headers: headers });
+  }
+  
+  login(loginRequest: LoginRequest): Observable<AppUser> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<AppUser>(`${environment.authenticationUrl}/login`, loginRequest, { headers }).pipe(
+      tap(res => {
+          localStorage.setItem('currentUser', JSON.stringify(res));
+          this.userSubject.next(res);
+          return res;
       })
-    };
+    );
   }
   
-  public registerUser(user: AppUser): Observable<AppUser> {
-    return this.http.post<AppUser>(`${environment.authenticationUrl}/register`, { user }, this.httpOptions);
+  logout(): Observable<any> {
+    return this.http.post<any>(`${environment.authenticationUrl}/logout`, {}).pipe(
+      tap(() => {
+    	  localStorage.removeItem('currentUser');
+    	  this.userSubject.next(new AppUser());
+      })
+    );
   }
 
-  public loginUser(user: AppUser): Observable<AppUser> {
-    return this.http.post<AppUser>(`${environment.authenticationUrl}/login`, { user }, this.httpOptions)
-      .pipe(
-        map(user => {
-          user.authdata = window.btoa(user.username + ':' + user.password);
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.currentUserSubject.next(user);
-          return user;
-        })
-      );
-  }
-  
-  public assignRole(userId: string, roleName: string): Observable<any> {
-    return this.http.post<any>(`${environment.authenticationUrl}/assign`, { userId, roleName }, this.httpOptions);
-  }
-  
-  public validateToken() {
-	    return this.http.get<{userId: number, name: string, valid: boolean}>(`${environment.authenticationUrl}/validateToken`, this.httpOptions);
-  }
-
-  public logout(): Observable<any> {
-	    // remove user from local storage to log user out
-	    localStorage.removeItem('currentUser');
-	    this.currentUserSubject.next(null);
-	    return this.http.post(`${environment.authenticationUrl}/logout`, {}, this.httpOptions);
-  }
-
-  public getCurrentUser(): AppUser | null {
-    return this.currentUserSubject.value;
-  }
-  
-  public isUserLoggedIn(): boolean {
-    return !!this.getCurrentUser();
-  }
 }

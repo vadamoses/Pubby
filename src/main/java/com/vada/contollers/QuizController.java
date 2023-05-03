@@ -12,16 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vada.interfaces.impl.QuestionServiceImpl;
+import com.vada.interfaces.QuestionService;
 import com.vada.models.PossibleAnswer;
 import com.vada.models.Question;
 import com.vada.models.QuizOptions;
@@ -33,14 +34,15 @@ import lombok.Setter;
  * @author 2050610
  *
  */
-@Controller
-@RequestMapping(value = "/quiz", produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController
+@CrossOrigin
+@RequestMapping(value = "/api/quiz", produces = MediaType.APPLICATION_JSON_VALUE)
 public class QuizController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuizController.class);
 
 	@Autowired
-	private QuestionServiceImpl qService;
+	private QuestionService qService;
 
 	QuizOptions quizOptions = new QuizOptions();
 	@Getter
@@ -51,6 +53,7 @@ public class QuizController {
 	private int qCount = 0;
 
 	@GetMapping(value = "/load-questions-from-file")
+	@PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
 	public void loadQuestionsFromFile() {
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -58,13 +61,14 @@ public class QuizController {
 			qService.saveQuestions(Arrays.asList(questions));
 			LOGGER.info("Questions loaded successfully.");
 		} catch (IOException e) {
-			LOGGER.info("Failed to read quiz questions from file: " + e.getMessage());
+			LOGGER.info("Failed to read quiz questions from file: {}", e.getMessage());
 		}
 	}
 
 	@PostMapping(value = "/setup-quiz")
+	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<QuizOptions> setupQuiz(@RequestBody QuizOptions quizOptions) {
-		LOGGER.info("Setting up quiz with quiz size: " + quizOptions.getQuizSize());
+		LOGGER.info("Setting up quiz with quiz size: {} ", quizOptions.getQuizSize());
 		qService.setupQuiz(quizOptions.getQuizSize());
 		LOGGER.info("End - setupQuiz");
 		return ResponseEntity.ok(quizOptions);
@@ -74,6 +78,7 @@ public class QuizController {
 	 * @return quizQuestions
 	 */
 	@GetMapping(value = "/get-quiz-questions")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<List<Question>> getQuizQuestions() {
 		LOGGER.info("Start - getQuizQuestions");
 		List<Question> quizQuestions = qService.getQuizQuestions();
@@ -83,17 +88,6 @@ public class QuizController {
 		}
 		LOGGER.info("End - getQuizQuestions");
 		return ResponseEntity.ok(quizQuestions);
-	}
-
-	/**
-	 * @param givenAnswer
-	 * @return boolean;
-	 */
-	@GetMapping(value = "/validate-answer/")
-	public Boolean validateAnswer(@RequestParam(value = "givenAnswer") String givenAnswer) {
-	    LOGGER.info("Start - validateAnswer");
-	    LOGGER.info("End - validateAnswer");
-	    return qService.validateAnswer(givenAnswer);
 	}
 
 
@@ -112,6 +106,7 @@ public class QuizController {
 	 * @param question
 	 */
 	@PostMapping(value = "/add-new-question")
+	@PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Question> addQuestion(@RequestBody Question question) {
 		LOGGER.info("Start - addQuestion");
 		Question newQuestion = this.qService.addQuestion(question);
@@ -120,6 +115,7 @@ public class QuizController {
 	}
 
 	@DeleteMapping(value = "/delete-quiz-questions")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<HttpStatus> deleteAllQuizQuestions() {
 		LOGGER.info("Start - deleteAllQuizQuestions");
 		this.qService.deleteAllQuizQuestions();

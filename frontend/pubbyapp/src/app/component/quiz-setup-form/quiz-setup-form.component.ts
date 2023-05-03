@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { first } from 'rxjs/operators';
 import { QuizOptions } from '../../model/quiz-options';
 import { PubbyService } from '../../service/pubby.service';
 
@@ -9,7 +10,7 @@ import { PubbyService } from '../../service/pubby.service';
 	styleUrls: ['./quiz-setup-form.component.css']
 })
 export class QuizSetupFormComponent implements OnInit {
-	quizSize!: number;
+	quizSize: number = 0;
 
 	constructor(private router: Router, private quizService: PubbyService) { }
 
@@ -19,7 +20,8 @@ export class QuizSetupFormComponent implements OnInit {
 	setupQuizWithOptions() {
 		if (this.quizSize) {
 			const quizOptions: QuizOptions = { quizSize: this.quizSize };
-			this.quizService.setupQuiz(quizOptions).subscribe({
+			this.quizService.setupQuiz(quizOptions)
+			.pipe(first()).subscribe({
 				next: () => {
 					this.startQuiz();
 				},
@@ -30,7 +32,8 @@ export class QuizSetupFormComponent implements OnInit {
 	}
 
 	startQuiz() {
-		this.quizService.getQuizQuestions().subscribe({
+		this.quizService.getQuizQuestions()
+		.pipe(first()).subscribe({
 			next: (questions) => {
 				this.router.navigate(['/quiz'], { state: { questions } });
 			},
