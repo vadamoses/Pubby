@@ -1,22 +1,29 @@
 package com.vada.tools;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import com.vada.interfaces.impl.UserDetailsImpl;
 
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
@@ -24,6 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtUtils implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtils.class);
@@ -64,46 +72,48 @@ public class JwtUtils implements Serializable {
 		final Date expiration = getExpirationDateFromToken(token);
 		return expiration.before(new Date());
 	}
-	
-    public boolean validateToken(String token) {
-        try {
-            	Jwts.parserBuilder().setSigningKey(this.key).build().parseClaimsJws(token);         	
-            	return true;
-        } catch (JwtException e) {
-            LOGGER.error("Invalid JWT: {}", e.getMessage());
-        }
-        return false;
-    }
 
-	public String getJwtFromCookies(HttpServletRequest request) {
-		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-		return (cookie != null) ? cookie.getValue() : null;
+	public Boolean validateToken(String token, UserDetails userDetails) {
+		final String username = getUserNameFromToken(token);
+		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	}
 
-	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
-		this.currentToken = generateTokenFromUsername(userPrincipal.getUsername());
-		return ResponseCookie.from("access_token", this.currentToken).path("/api").maxAge(2L * jwtValidity)
+	public ResponseCookie generateJwtCookie(String token) {
+		return ResponseCookie.from("access_token", token).path("/api").maxAge(jwtValidity * 100L)
 				.httpOnly(true).build();
 	}
 
-	public ResponseCookie generateRefreshJwtCookie(UserDetailsImpl userPrincipal) {
-		this.currentToken = generateTokenFromUsername(userPrincipal.getUsername());
-		return ResponseCookie.from("refresh_token", this.currentToken).path("/api").maxAge(4L * jwtValidity)
+	public ResponseCookie generateRefreshJwtCookie(String token) {
+		return ResponseCookie.from("refresh_token", token).path("/api").maxAge(jwtValidity * 400L)
 				.httpOnly(true).build();
 	}
 
 	public ResponseCookie getCleanJwtCookie() {
 		return ResponseCookie.from(jwtCookie, null).path("/api").build();
 	}
-	
-	public String getCurrentToken() {
-		return this.currentToken;
+
+	public String generateToken(Authentication authentication) {
+		String authorities = authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(","));
+
+		return Jwts.builder()
+				.setSubject(authentication.getName())
+				.claim(authoritiesKey, authorities)
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + jwtValidity * 1000L))
+				.signWith(this.key, SignatureAlgorithm.HS512)
+				.compact();
 	}
 
-	public String generateTokenFromUsername(String username) {
-		return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-				.setExpiration(new Date((new Date()).getTime() + jwtValidity))
-				.signWith(this.key, SignatureAlgorithm.HS512).compact();
+	UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth, final UserDetails userDetails) {
+		final Claims claims = Jwts.parserBuilder().setSigningKey(this.key).build().parseClaimsJws(token).getBody();
+
+		final Collection<? extends GrantedAuthority> authorities =
+				Arrays.stream(claims.get(authoritiesKey).toString().split(","))
+						.map(SimpleGrantedAuthority::new).toList();
+
+		return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
 	}
 	
 }

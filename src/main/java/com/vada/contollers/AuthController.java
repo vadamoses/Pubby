@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.vada.contollers.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,10 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vada.contollers.dto.LoginRequest;
-import com.vada.contollers.dto.MessageResponse;
-import com.vada.contollers.dto.RegisterRequest;
-import com.vada.contollers.dto.AppUser;
 import com.vada.interfaces.UserService;
 import com.vada.interfaces.impl.UserDetailsImpl;
 import com.vada.models.Role;
@@ -53,29 +51,23 @@ public class AuthController {
 	@Autowired
 	JwtUtils jwtUtils;
 
-	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<?> generateToken(@Valid @RequestBody LoginRequest loginRequest) throws AuthenticationException {
 
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		final String token = jwtUtils.generateToken(authentication);
 
-		ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-		
-		//ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(userDetails);
-
-		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-
-
+		ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(token);
+		ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(token);
 		return ResponseEntity.ok()
-			.header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-			//.header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-			.body(new AppUser(userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(),
-					jwtUtils.getCurrentToken(), roles));
-	}
+				.header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+				.header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
+				.body(new AuthToken(token));
+    }
 
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest signUpRequest) {

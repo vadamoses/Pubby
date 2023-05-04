@@ -5,30 +5,29 @@ import { environment } from '../../environments/environment';
 import { Question } from '../model/question';
 import { QuizOptions } from '../model/quiz-options';
 
-	  
+
 const httpOptions = {
    headers: new HttpHeaders({
      'Content-Type':  'application/json'
    })
  };
-    
-    
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class PubbyService {
-  
+
   constructor(private http: HttpClient) {}
 
   public setupQuiz(quizOptions: QuizOptions): Observable<QuizOptions> {
-	  httpOptions.headers.append('Authorization','Bearer ')
-	return this.http.post<QuizOptions>(`${environment.quizUrl}/setup-quiz`, quizOptions, httpOptions);
+	  return this.http.post<QuizOptions>(`${environment.quizUrl}/setup-quiz`, quizOptions);
   }
 
   public getQuizQuestions(): Observable<Question[]> {
     return this.http.get<Question[]>(`${environment.quizUrl}/get-quiz-questions`);
   }
-  
+
   public validateAnswer(givenAnswer: any): Observable<boolean> {
     const options = { params: { givenAnswer }};
     return this.http.get<boolean>(`${environment.quizUrl}/validate-answer`, options);

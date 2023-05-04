@@ -11,7 +11,7 @@ import { AppUser } from '../model/authentication/app-user';
   providedIn: 'root'
 })
 export class AuthenticationService {
-	
+
 	private userSubject: BehaviorSubject<AppUser>;
 	public user: Observable<AppUser>;
 
@@ -22,16 +22,16 @@ export class AuthenticationService {
   	);
     this.user = this.userSubject.asObservable();
   }
-  
+
   getUserValue(): AppUser {
     return this.userSubject.value;
   }
-    
+
   register(registerRequest: RegisterRequest): Observable<any> {
 	  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 	  return this.http.post<any>(`${environment.authenticationUrl}/register`, registerRequest, { headers: headers });
   }
-  
+
   login(loginRequest: LoginRequest): Observable<AppUser> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<AppUser>(`${environment.authenticationUrl}/login`, loginRequest, { headers }).pipe(
@@ -42,7 +42,7 @@ export class AuthenticationService {
       })
     );
   }
-  
+
   logout(): Observable<any> {
     return this.http.post<any>(`${environment.authenticationUrl}/logout`, {}).pipe(
       tap(() => {

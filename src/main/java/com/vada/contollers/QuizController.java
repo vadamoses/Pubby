@@ -66,7 +66,7 @@ public class QuizController {
 	}
 
 	@PostMapping(value = "/setup-quiz")
-	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<QuizOptions> setupQuiz(@RequestBody QuizOptions quizOptions) {
 		LOGGER.info("Setting up quiz with quiz size: {} ", quizOptions.getQuizSize());
 		qService.setupQuiz(quizOptions.getQuizSize());
@@ -82,10 +82,6 @@ public class QuizController {
 	public ResponseEntity<List<Question>> getQuizQuestions() {
 		LOGGER.info("Start - getQuizQuestions");
 		List<Question> quizQuestions = qService.getQuizQuestions();
-		List<PossibleAnswer> possibleAnswers = new ArrayList<>();
-		for (Question question : quizQuestions) {
-			possibleAnswers.addAll(question.getPossibleAnswers());
-		}
 		LOGGER.info("End - getQuizQuestions");
 		return ResponseEntity.ok(quizQuestions);
 	}
