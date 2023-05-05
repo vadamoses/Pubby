@@ -83,17 +83,21 @@ export class QuizComponent {
 	  }
   
 	nextQuestion() {
-	  this.quiz.currentQuestionIndex++;
-	  if (this.quiz.currentQuestionIndex < this.quiz.questions.length) {
+	this.quiz.currentQuestionIndex++;
+	if (this.quiz.currentQuestionIndex < this.quiz.questions.length) {
 		this.quiz.currentQuestion = this.quiz.questions[this.quiz.currentQuestionIndex];
 		this.quiz.timeLeft = this.quiz.questionTimeLimit;
 		this.quiz.timeExpired = false;
-		this.startTimer();
-	  } else {
+		setTimeout(() => {
+		if (!this.quiz.quizComplete) {
+			this.startTimer();
+		}
+		}, 2000);
+	} else {
 		this.quiz.quizComplete = true;
 		this.validateAnswers();
 		clearInterval(this.quiz.timer);
-	  }
+	}
 	}
   
 	getQuizScore(): number {
@@ -106,6 +110,7 @@ export class QuizComponent {
 	  this.quiz.totalTimeTaken = 0;
 	  this.quiz.quizComplete = false;
 	  this.quiz.givenAnswers = [];
+	  clearInterval(this.quiz.timer);
 	  this.loadQuizQuestions();
 	}
   

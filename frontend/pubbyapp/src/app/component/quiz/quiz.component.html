@@ -19,6 +19,14 @@
 	<h3>Quiz Complete</h3>
 	<p>Your score is {{ getQuizScore() }} out of {{ getQuiz().questions.length }}.</p>
 	<p>Your total time taken was {{ getQuiz().totalTimeTaken}} seconds!</p>
+	<div class="question-card">
+		<h4>Your answers:</h4>
+		<ul class="question-card-answers">
+			<li *ngFor="let answer of getQuiz().givenAnswers; let i = index">
+				<p class="question-card-text">{{getQuiz().questions[i].questionText}} - {{ answer.text }} : {{ answer.accurate }}</p>
+			</li>
+		</ul>
+	</div>
 	<button (click)="restartQuiz()">Restart Quiz</button>
 	<button (click)="quit()">Quit Game</button>
   </div>
