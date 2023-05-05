@@ -32,7 +32,7 @@ export class TokenInterceptorService implements HttpInterceptor {
 		      });
 		    }
 		
-		    return next.handle(req)/*.pipe(
+		    return next.handle(req).pipe(
 		      catchError((err) => {
 		          if (err.status === 401) {
 		            this.authService.logout();
@@ -40,6 +40,6 @@ export class TokenInterceptorService implements HttpInterceptor {
 		          const error = err.error.message || err.statusText;
 		          return throwError(() => error);
 		        })
-		      )*/;
+		      );
 	    }
 	 }

@@ -28,11 +28,6 @@ export class PubbyService {
     return this.http.get<Question[]>(`${environment.quizUrl}/get-quiz-questions`);
   }
 
-  public validateAnswer(givenAnswer: any): Observable<boolean> {
-    const options = { params: { givenAnswer }};
-    return this.http.get<boolean>(`${environment.quizUrl}/validate-answer`, options);
-  }
-
   public addQuestion(question: Question): Observable<Question> {
     return this.http.post<Question>(`${environment.quizUrl}/add`, { question });
   }

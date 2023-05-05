@@ -1,17 +1,13 @@
 <div class="question-card">
-	<h4 class="question-card-title">{{question.title}}</h4>
+	<!-- <h4 class="question-card-title">{{question.title}}</h4> -->
 	<p class="question-card-text">{{question.questionText}}</p>
 	<ul class="question-card-answers">
 		<li *ngFor="let answer of question.possibleAnswers; let i = index"
 			[ngClass]="{
-      'question-card-selected-answer': answerSelected && answer === selectedAnswer,
-      'question-card-correct-answer': answerSelected && answer.accurate && answer === selectedAnswer
+      'question-card-selected-answer': answerSelected && answer === selectedAnswer
     }"
 			(click)="onSelectAnswer(answer)">
-			<h4 class="question-card-text">{{ i +' '+ answer }}</h4>
+			<h4 class="question-card-text">{{ answer.text }}</h4>
 		</li>
 	</ul>
-
-	<button class="question-card-next-button" [disabled]="!answerSelected"
-		(click)="nextQuestion.emit()">Next</button>
 </div>

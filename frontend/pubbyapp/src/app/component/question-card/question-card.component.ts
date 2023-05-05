@@ -10,7 +10,6 @@ import { PossibleAnswer } from '../../model/possible-answer';
 export class QuestionCardComponent implements OnInit {
 
 	@Input() question: Question;
-	@Output() nextQuestion = new EventEmitter<void>();
 	@Output() givenAnswer  = new EventEmitter<{answer:PossibleAnswer}>();
 
 	answerSelected = false;
@@ -26,13 +25,4 @@ export class QuestionCardComponent implements OnInit {
 	    this.selectedAnswer = answer;
 	    this.givenAnswer.emit({answer: answer});
 	}
-
-	onNextQuestion(): void {
-	    this.answerSelected = false;
-	    this.selectedAnswer = new PossibleAnswer();
-	    this.nextQuestion.emit();
-	}
-
-
-
 }

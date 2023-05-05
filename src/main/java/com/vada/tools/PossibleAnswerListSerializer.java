@@ -12,8 +12,12 @@ public class PossibleAnswerListSerializer extends JsonSerializer<List<PossibleAn
     public void serialize(List<PossibleAnswer> value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartArray();
         for (PossibleAnswer answer : value) {
-            gen.writeString(answer.getAnswerText());
+            gen.writeStartObject();
+            gen.writeStringField("text", answer.getAnswerText());
+            gen.writeBooleanField("accurate", answer.isAccurate());
+            gen.writeEndObject();
         }
         gen.writeEndArray();
     }
+
 }
